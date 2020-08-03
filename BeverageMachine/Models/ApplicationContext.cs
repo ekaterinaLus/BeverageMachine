@@ -1,19 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeverageMachine.Models
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext<User>
     {     
-            public DbSet<DrinkModel> Drinks { get; set; }
-
+            public System.Data.Entity.DbSet<DrinkModel> Drinks { get; set; }
+            
             public ApplicationContext(DbContextOptions<ApplicationContext> options)
                 : base(options)
             {
             }
+
 
             public ApplicationContext()
             {

@@ -6,6 +6,7 @@ using BeverageMachine.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,9 @@ namespace BeverageMachine
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(connection));
 
+            services.AddIdentity<User, IdentityRole>().
+                AddEntityFrameworkStores<ApplicationContext>();
+
             ApplicationContext app = new ApplicationContext();
             services.AddControllersWithViews();
         }
@@ -50,7 +54,7 @@ namespace BeverageMachine
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

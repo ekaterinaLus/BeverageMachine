@@ -23,10 +23,12 @@ namespace BeverageMachine.Controllers
         {
             context = _context;
         }
+
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await context.Drinks.ToListAsync());
+            return View();
+            //return View(await context.Drinks.ToListAsync());
         }
 
         public IActionResult Privacy()
