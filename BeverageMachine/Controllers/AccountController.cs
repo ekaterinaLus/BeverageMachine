@@ -14,7 +14,45 @@ namespace BeverageMachine.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        [HttpGet]
+        public IActionResult Login(string stringUrl = null)
+        {
+            return View(new LoginViewModel { ReturnUrl = stringUrl });
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task <IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.Remember, false);
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Неправильный логин или пароль");
+            }          
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
@@ -49,6 +87,8 @@ namespace BeverageMachine.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
+
+                
             }
             return View(model);
         }

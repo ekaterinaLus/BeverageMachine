@@ -1,0 +1,30 @@
+﻿@model BeverageMachine.ViewModel.LoginViewModel
+@{
+    ViewBag.Title = "Вход";
+}
+<link href="https://fonts.googleapis.com/css2?family=Antic+Slab&display=swap" rel="stylesheet">
+<div class="mycontainer" class="div-form" background="https://st4.depositphotos.com/13324256/21869/i/450/depositphotos_218693966-stock-photo-top-view-pomegranate-piece-seeds.jpg">
+        <form class="form-style" method="post" asp-controller="Account" asp-action="Login"
+              asp-route-returnUrl="@Model.ReturnUrl">
+            <h2>Вход</h2>
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="group">
+                <input type="text" required asp-for="Email">
+                <span asp-validation-for="Email" class="bar"></span>
+                <label asp-for="Email">Email</label>
+            </div>
+            <div class="group">
+                <input type="text" required asp-for="Password">
+                <span asp-validation-for="Password" class="bar"></span>
+                <label asp-for="Password">Пароль</label>
+            </div>
+            <div>
+                <input asp-for="Remember" />
+                <span asp-validation-for="Remember" class="bar"></span>
+                <label asp-for="Remember">Запомнить?</label><br />
+            </div>
+            <div>
+                <input type="submit" value="Войти" class="button" />
+            </div>
+        </form>
+    </div>
