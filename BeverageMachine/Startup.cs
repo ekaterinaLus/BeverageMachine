@@ -31,7 +31,8 @@ namespace BeverageMachine
                 options.UseSqlServer(connection));
 
             services.AddIdentity<User, IdentityRole>().
-                AddEntityFrameworkStores<ApplicationContext>();
+                AddEntityFrameworkStores<ApplicationContext>().
+                AddDefaultTokenProviders();
 
             ApplicationContext app = new ApplicationContext();
             services.AddControllersWithViews();

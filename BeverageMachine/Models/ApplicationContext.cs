@@ -17,7 +17,6 @@ namespace BeverageMachine.Models
             {
             }
 
-
             public ApplicationContext()
             {
                 Database.EnsureCreated();

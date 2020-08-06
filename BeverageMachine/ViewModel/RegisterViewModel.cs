@@ -10,10 +10,6 @@ namespace BeverageMachine.ViewModel
     public class RegisterViewModel
     {
 			[RequiredAttribute]
-			[DisplayName("Логин")]
-			public string Login { get; set; }
-
-			[RequiredAttribute]
 			[DataType(DataType.EmailAddress)]
 			[DisplayName("Email")]
 			public string Email { get; set; }
