@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BeverageMachine.Models;
+using BeverageMachine.Repository;
+using BeverageMachine.Services;
+using Helper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,13 +32,43 @@ namespace BeverageMachine
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(connection));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                  migration => migration.MigrationsAssembly(Configuration.GetValue<string>("MigrationsAssembly"))));
 
-            services.AddIdentity<User, IdentityRole>().
-                AddEntityFrameworkStores<ApplicationContext>().
-                AddDefaultTokenProviders();
+            //services.AddDbContext<BusinessUniversityContext>(options =>
+            //  options.UseNpgsql(Configuration.GetConnectionString("BusinessUniversity"),
+            //      migration => migration.MigrationsAssembly(Configuration.GetValue<string>("MigrationsAssembly"))));
 
-            ApplicationContext app = new ApplicationContext();
+            services.AddIdentity<UserViewModel, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 4;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            })
+               .AddEntityFrameworkStores<ApplicationContext>()
+               .AddDefaultTokenProviders();
+
+            services.AddScoped<ApplicationContext>();
+           
+            services.AddScoped<IDrinkRepository, DrinkRepository>();
+
+            services.AddScoped<IShoppingBasketsRepository, ShoppingBasketsRepository>();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            //services.AddIdentity<UserViewModel, Role>().
+            //    AddEntityFrameworkStores<ApplicationContext>().
+            //    AddDefaultTokenProviders();
+            //services.AddDistributedMemoryCache();
+            //services.AddSession();
+
+            services.AddTransient<IEmailService, EmailService>();
             services.AddControllersWithViews();
         }
 
@@ -51,6 +85,7 @@ namespace BeverageMachine
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

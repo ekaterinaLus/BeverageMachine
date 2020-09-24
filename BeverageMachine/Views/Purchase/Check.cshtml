@@ -1,0 +1,14 @@
+﻿@model BeverageMachine.ViewModel.OrderViewModel;
+@{
+    ViewBag.Title = "Сумма к оплате";
+}
+<h1>@ViewBag.Title.</h1>
+<p>Сумма к оплате: @ViewBag.Sum</p>
+<form method="post" asp-controller="Purchase" asp-action="Check">
+    <input type="text" name="money">
+    <input type="hidden" name="id" value=@ViewBag.Order />
+    <p>Ваша сдача: @ViewBag.Change</p>
+    <div>
+        <input type="submit" value="Внести сумму" class="button" />
+    </div>
+</form>

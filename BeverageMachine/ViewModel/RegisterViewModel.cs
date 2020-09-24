@@ -24,5 +24,5 @@ namespace BeverageMachine.ViewModel
 			[DisplayName("Повторите пароль")]
 			[Compare("Password", ErrorMessage = "Пароли не совпадают")]
 			public string PasswordCompare { get; set; }
-		}
+	}
 }

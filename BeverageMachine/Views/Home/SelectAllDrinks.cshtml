@@ -1,4 +1,4 @@
-﻿@model List<BeverageMachine.Models.DrinkModel>
+﻿@model List<BeverageMachine.Models.DrinkViewModel>
 @{
     ViewBag.Title = "All drinks";
 }
@@ -12,7 +12,7 @@
                 <th scope="col">Amount</th>
             </tr>
         </thead>
-        @foreach (DrinkModel el in Model)
+        @foreach (DrinkViewModel el in Model)
         {
             <tbody>
                 <tr>

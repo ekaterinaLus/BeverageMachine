@@ -7,17 +7,13 @@ using System.Threading.Tasks;
 
 namespace Helper
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
-        public string EmailAddress { get; set; }
         public EmailService()
         {
 
         }
-        public EmailService(string email)
-        {
-            EmailAddress = email;
-        }
+        
         public async Task SendEmailAsync(string email, string subject, string message)
         {
             MailAddress from = new MailAddress("Test1234567.test12@yandex.ru", "Barny");

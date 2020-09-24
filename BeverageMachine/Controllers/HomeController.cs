@@ -7,18 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BeverageMachine.Models;
 using Microsoft.EntityFrameworkCore;
+using BeverageMachine.Repository;
 
 namespace BeverageMachine.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private static ApplicationContext context = new ApplicationContext();
+        private readonly IDrinkRepository drinkRepository = new DrinkRepository(context);
 
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-        //}
-        private ApplicationContext context;
         public HomeController(ApplicationContext _context)
         {
             context = _context;
@@ -28,33 +26,27 @@ namespace BeverageMachine.Controllers
         public IActionResult Index()
         {
             return View();
-            //return View(await context.Drinks.ToListAsync());
         }
 
         public IActionResult Privacy()
         {
             return View();
         }
-
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
         [HttpPost]
-        public async Task<IActionResult> Create(DrinkModel drink)
+        public IActionResult Create(DrinkViewModel drink)
         {
-            //List<obj> listOb
-            // await context.Drinks.AddUniqueElementAsync(drink);
-            context.Add(drink);
-
-            await context.SaveChangesAsync();
-
+            drinkRepository.Create(drink);
             return RedirectToAction("Index");
         }
+
         public IActionResult SelectAllDrinks()
         {
-            List<DrinkModel> drinks = context.Drinks.AsNoTracking().ToList();
+            var drinks = drinkRepository.GetAll();
             return View(drinks);
         }
 

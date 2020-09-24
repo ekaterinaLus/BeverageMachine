@@ -1,18 +1,17 @@
-﻿using System;
+﻿using BeverageMachine.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BeverageMachine.Models
 {
-    public class DrinkModel
+    public class DrinkModel: GenericModel<DrinkRepository, DrinkViewModel>
     {
-            private double value = 0.5;
-            //public double Value { get { return value; } }
-            //public List<double> value = new List<double>() { 0.5, 1.0, 1.5 };
-            public int Id { get; set; }
-            public string Name { get; set; }
-            //public double Value { get; set; }
-            public decimal Amount { get; set; }
+        private readonly DrinkRepository drinkRepository;
+        public DrinkModel(ApplicationContext context)
+        {
+            drinkRepository = new DrinkRepository(context);
+        }
     }
 }

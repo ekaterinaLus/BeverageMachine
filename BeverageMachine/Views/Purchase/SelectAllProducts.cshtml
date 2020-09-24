@@ -1,0 +1,31 @@
+﻿@model BeverageMachine.ViewModel.GoodsViewModel;
+@{
+    ViewBag.Title = "Ваша корзина";
+}
+    <form asp-action="selectallproducts" asp-controller="purchase" method="get">
+        <h3>В корзине @Model.PurchasedGoods.Count() товар(ов)</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Напиток</th>
+                    <th scope="col">Цена</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (BeverageMachine.ViewModel.PurchasedGoodViewModel purchase in Model.PurchasedGoods)
+            {
+                <tr>
+                    <td scope="col" name="Id">@purchase.Id</td>
+                    <td scope="col" name="Name">@purchase.Quantity</td>
+                    <td scope="col" name="Name">@purchase.Drink.Name</td>
+                    <td scope="col" name="Amount">@purchase.Drink.Amount</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </form>
+    <div>
+        <a asp-controller="Purchase" asp-action="Check" asp-route-id=@Model.Basket.Id><input type="button" value="Оплатить" /></a>
+    </div>

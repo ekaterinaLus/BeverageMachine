@@ -8,18 +8,66 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BeverageMachine.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(IApplicationContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.6")
+                .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BeverageMachine.Models.User", b =>
+            modelBuilder.Entity("BeverageMachine.Models.DrinkViewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Drinks");
+                });
+
+            modelBuilder.Entity("BeverageMachine.Models.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("BeverageMachine.Models.UserViewModel", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -84,31 +132,64 @@ namespace BeverageMachine.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("BeverageMachine.ViewModel.OrderViewModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                    b.Property<int?>("BasketId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                    b.HasIndex("BasketId");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("BeverageMachine.ViewModel.PurchasedGoodViewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DrinkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShoppingBasketViewModelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DrinkId");
+
+                    b.HasIndex("ShoppingBasketViewModelId");
+
+                    b.ToTable("PurchasedGoods");
+                });
+
+            modelBuilder.Entity("BeverageMachine.ViewModel.ShoppingBasketViewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShoppingBaskets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -215,9 +296,31 @@ namespace BeverageMachine.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("BeverageMachine.ViewModel.OrderViewModel", b =>
+                {
+                    b.HasOne("BeverageMachine.ViewModel.ShoppingBasketViewModel", "Basket")
+                        .WithMany()
+                        .HasForeignKey("BasketId");
+                });
+
+            modelBuilder.Entity("BeverageMachine.ViewModel.PurchasedGoodViewModel", b =>
+                {
+                    b.HasOne("BeverageMachine.Models.DrinkViewModel", "Drink")
+                        .WithMany()
+                        .HasForeignKey("DrinkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeverageMachine.ViewModel.ShoppingBasketViewModel", "ShoppingBasketViewModel")
+                        .WithMany("Goods")
+                        .HasForeignKey("ShoppingBasketViewModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("BeverageMachine.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -226,7 +329,7 @@ namespace BeverageMachine.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("BeverageMachine.Models.User", null)
+                    b.HasOne("BeverageMachine.Models.UserViewModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -235,7 +338,7 @@ namespace BeverageMachine.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("BeverageMachine.Models.User", null)
+                    b.HasOne("BeverageMachine.Models.UserViewModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -244,13 +347,13 @@ namespace BeverageMachine.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("BeverageMachine.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BeverageMachine.Models.User", null)
+                    b.HasOne("BeverageMachine.Models.UserViewModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -259,7 +362,7 @@ namespace BeverageMachine.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("BeverageMachine.Models.User", null)
+                    b.HasOne("BeverageMachine.Models.UserViewModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeverageMachine", "BeverageMachine\BeverageMachine.csproj", "{9714B2EB-5E9C-4A26-A2E7-60A891BAA928}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helper", "Helper\Helper.csproj", "{C529FED5-C02D-4DC1-A646-6D076E1EB7F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helper", "Helper\Helper.csproj", "{C529FED5-C02D-4DC1-A646-6D076E1EB7F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

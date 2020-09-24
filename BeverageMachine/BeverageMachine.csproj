@@ -1,24 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\NewFolder\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Helper\Helper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Shopping\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties wwwroot_4lib_4bootstrap_4dist_4css_4bootstrap_1css_1map__JsonSchema="https://json.schemastore.org/sprite" /></VisualStudio></ProjectExtensions>

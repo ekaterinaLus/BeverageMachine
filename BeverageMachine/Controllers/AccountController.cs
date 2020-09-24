@@ -1,23 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Threading.Tasks;
-using BeverageMachine.Models;
+﻿using BeverageMachine.Models;
+using BeverageMachine.Services;
 using BeverageMachine.ViewModel;
 using Helper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace BeverageMachine.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<UserViewModel> _userManager;
+        private readonly SignInManager<UserViewModel> _signInManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly IEmailService _emailService;
+        private readonly ApplicationContext _context;
+
+        public AccountController(UserManager<UserViewModel> userManager, SignInManager<UserViewModel> signInManager, //RoleManager<Role> roleManager,
+            IEmailService emailService, ApplicationContext context)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            //_roleManager = roleManager;
+            _emailService = emailService;
+            _context = context;
+        }
+
         [HttpGet]
         public IActionResult Login(string stringUrl = null)
         {
@@ -57,11 +67,7 @@ namespace BeverageMachine.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
+ 
         public IActionResult Index()
         {
             return View();
@@ -76,29 +82,17 @@ namespace BeverageMachine.Controllers
         { 
             if(ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if(result.Succeeded)
+                var result = await model.Registration(_userManager, _signInManager);
+                foreach (var error in result.Errors)
                 {
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }                
             }
-            return View();
+            return View(model);
         }
-
         public async Task SendEmailAsync(string email)
         {
-            EmailService emailService = new EmailService();
-            await emailService.SendEmailAsync(email, "Тема письма", "Тест письма: тест!"); ;
+            await _emailService.SendEmailAsync(email, "Тема письма", "Тест письма: тест!"); 
             RedirectToAction("Index", "Home");
         }
 
@@ -112,18 +106,8 @@ namespace BeverageMachine.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Проверить что будет, если юзеров с одинаковым имейлом несколько
-                var user = await _userManager.FindByNameAsync(model.Email); //Users.FirstOrDefault(x => x.Email == model.Email);  
-                if (user == null)
-                {
-                    return View(model);
-                }
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var codeUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                EmailService emailService = new EmailService();
-                await emailService.SendEmailAsync(model.Email, "Letter", $"Для сброса пароля пройдите по ссылке: <a href='{codeUrl}'>link</a>");
+                await model.SendLetter(_userManager, _signInManager, Url, HttpContext);
                 return View("ForgetPasswordMessage");
-                //return RedirectToAction("Index", "Home");
             }
             return View(model);
         }

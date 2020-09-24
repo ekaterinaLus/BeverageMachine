@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BeverageMachine.Models
 {
-    public class User : IdentityUser
+    public class UserViewModel : IdentityUser
     {
-        public string Email { get; set; }
+        public override string Email { get; set; }
     }
 }
