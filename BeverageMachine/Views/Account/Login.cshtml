@@ -1,31 +1,49 @@
 ﻿@model BeverageMachine.ViewModel.LoginViewModel
 @{
     ViewBag.Title = "Вход";
+    Layout = "~/Views/Shared/_User.cshtml";
 }
-<link href="https://fonts.googleapis.com/css2?family=Antic+Slab&display=swap" rel="stylesheet">
-<div class="mycontainer" background="https://st4.depositphotos.com/13324256/21869/i/450/depositphotos_218693966-stock-photo-top-view-pomegranate-piece-seeds.jpg">
-    <form class="form-style" method="post" asp-controller="Account" asp-action="Login"
+@*<link href="https://fonts.googleapis.com/css2?family=Antic+Slab&display=swap" rel="stylesheet">*@
+@*<div class="mycontainer-auth" background="https://st4.depositphotos.com/13324256/21869/i/450/depositphotos_218693966-stock-photo-top-view-pomegranate-piece-seeds.jpg">
+    <form class="form-style-auth" method="post" asp-controller="Account" asp-action="Login"
           asp-route-returnUrl="@Model.ReturnUrl">
-        <h2>Вход</h2>
+        <h2 class="text-account">Вход</h2>
         <div asp-validation-summary="ModelOnly"></div>
-        <div class="group">
-            <input type="text" required asp-for="Email">
-            <span asp-validation-for="Email" class="bar"></span>
-            <label asp-for="Email">Email</label>
+        <div class="group-auth">
+            <input class="input-auth" type="text" required asp-for="Email">
+            <span asp-validation-for="Email" class="bar-auth"></span>
+            <label class="label-auth text-account" asp-for="Email">Email</label>
         </div>
-        <div class="group">
-            <input type="text" required asp-for="Password">
-            <span asp-validation-for="Password" class="bar"></span>
-            <label asp-for="Password">Пароль</label>
+        <div class="group-auth">
+            <input class="input-auth" type="text" required asp-for="Password">
+            <span asp-validation-for="Password" class="bar-auth"></span>
+            <label class="label-auth" asp-for="Password">Пароль</label>
         </div>
         <div>
-            <input asp-for="Remember" />
-            <span asp-validation-for="Remember" class="bar"></span>
-            <label asp-for="Remember">Запомнить?</label><br />
+            <input type="checkbox" asp-for="Remember" />  Запомнить?
+            <span asp-validation-for="Remember" class="bar-auth"></span>
+            <label class="label-auth" asp-for="Remember">Запомнить?</label><br />
+        </div>
+        <div>
+            <input type="submit" value="Войти" class="button-auth text-account" />
         </div>
         <a href="ForgetPassword">Забыли пароль?</a>
-            <div>
-                <input type="submit" value="Войти" class="button" />
-            </div>
     </form>
-    </div>
+</div>*@
+    <form class="decor picture-auth"  method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" >
+        <div class="form-left-decoration"></div>
+        <div class="form-right-decoration"></div>
+        <div class="circle"></div>
+        <div class="form-inner">
+            <div asp-validation-summary="ModelOnly"></div>
+            <h3 align="center">Вход</h3>
+            <input type="email" placeholder="Email" required asp-for="Email">
+            <input type="password" placeholder="Пароль" required asp-for="Password">
+            <input type="submit" value="Отправить">
+            <input type="checkbox" id="custom-checkbox">
+            <label for="custom-checkbox" class="text-color">Запомнить меня</label>
+            <p align="center" class="text-color">Еще не зарегистрированы?</p>
+            <p align="center"><a href="Register">Зарегистрируйтесь</a></p>
+            <p align="center"><a href="ForgetPassword">Забыли пароль?</a></p>
+        </div>
+    </form>

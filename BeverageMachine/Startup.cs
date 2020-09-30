@@ -8,6 +8,7 @@ using BeverageMachine.Services;
 using Helper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -55,20 +56,33 @@ namespace BeverageMachine
 
             services.AddScoped<IShoppingBasketsRepository, ShoppingBasketsRepository>();
 
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-
-            //services.AddIdentity<UserViewModel, Role>().
-            //    AddEntityFrameworkStores<ApplicationContext>().
-            //    AddDefaultTokenProviders();
-            //services.AddDistributedMemoryCache();
-            //services.AddSession();
+            services.AddSession();
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromSeconds(10);
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.IsEssential = true;
+            //});
 
             services.AddTransient<IEmailService, EmailService>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = (context) =>
+                {
+                    context.Response.Clear();
+                    context.Response.StatusCode = 401;//StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+
+                options.Events.OnRedirectToAccessDenied = (context) =>
+                {
+                    context.Response.Clear();
+                    context.Response.StatusCode = 401;//StatusCodes.Status403Forbidden;
+                    return Task.CompletedTask;
+                };
+            });
+
             services.AddControllersWithViews();
         }
 

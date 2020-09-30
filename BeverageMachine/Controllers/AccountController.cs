@@ -14,7 +14,7 @@ namespace BeverageMachine.Controllers
     {
         private readonly UserManager<UserViewModel> _userManager;
         private readonly SignInManager<UserViewModel> _signInManager;
-        private readonly RoleManager<Role> _roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailService;
         private readonly ApplicationContext _context;
 
@@ -49,7 +49,7 @@ namespace BeverageMachine.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return Redirect("/");//return RedirectToAction("Index", "Home");
                     }
                 }
             }
@@ -60,8 +60,7 @@ namespace BeverageMachine.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

@@ -21,7 +21,7 @@ namespace BeverageMachine
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationContext>>()))
             {
                 //var adminId = await EnsureUserCreated(_context, serviceProvider, "1234", "ekaterinatimofeeva20@gmail.com");
-                var userId = await EnsureUserCreated(_context, serviceProvider, "1234", "kirill@gmail.com");
+                var userId = await EnsureUserCreated(_context, serviceProvider, "1234", "lirik@gmail.com");
                 //await EnsureRoleCreated(_context, serviceProvider, adminId, ApplicationContext.RoleName.Admin.ToString());
                 await EnsureRoleCreated(_context, serviceProvider, userId, ApplicationContext.RoleName.User.ToString());
             }
