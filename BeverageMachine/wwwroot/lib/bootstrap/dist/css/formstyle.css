@@ -147,6 +147,24 @@ input:focus ~ .bar:after {
     opacity: 0;
 }*/
 
+.center {
+    width: 600px;
+    padding: 10px; 
+    margin: auto; 
+}
+
+.body-image {
+    background-image: url(/image/derevo.jpg);
+}
+
+.bg-green {
+    background-color: #60ab49e0;
+}
+
+.bg-white {
+    background-color: #e7e7ce99 !important;
+}
+
 .picture-auth {
     background-image: url(image/background.jpg);
 }
@@ -198,7 +216,7 @@ input:focus ~ .bar:after {
 }
 
 .bg-yellow-formstyle {
-    background-color: #ffff99;
+    background-color: #fefe5cbf;
 }
 
 .shadow-formstyle {

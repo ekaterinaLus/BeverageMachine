@@ -23,6 +23,12 @@ namespace BeverageMachine.Controllers
         }
 
         [HttpGet]
+        public IActionResult Index1()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
