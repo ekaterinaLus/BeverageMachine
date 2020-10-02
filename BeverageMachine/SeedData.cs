@@ -1,15 +1,12 @@
 ﻿using BeverageMachine.Models;
-using BeverageMachine.Repository;
 using BeverageMachine.ViewModel;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace BeverageMachine
 {

@@ -5,6 +5,7 @@ using Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Policy;
 using System.Threading.Tasks;
 
@@ -17,15 +18,16 @@ namespace BeverageMachine.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailService;
         private readonly ApplicationContext _context;
-
+        private readonly IServiceProvider _provider;
         public AccountController(UserManager<UserViewModel> userManager, SignInManager<UserViewModel> signInManager, //RoleManager<Role> roleManager,
-            IEmailService emailService, ApplicationContext context)
+            IEmailService emailService, ApplicationContext context, IServiceProvider provider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             //_roleManager = roleManager;
             _emailService = emailService;
             _context = context;
+            _provider =provider;
         }
 
         [HttpGet]
@@ -49,7 +51,7 @@ namespace BeverageMachine.Controllers
                     }
                     else
                     {
-                        return Redirect("/");//return RedirectToAction("Index", "Home");
+                        return Redirect("/");//Redirect("/");
                     }
                 }
             }
@@ -78,16 +80,17 @@ namespace BeverageMachine.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
-        { 
-            if(ModelState.IsValid)
+        {
+            if (ModelState.IsValid)
             {
                 var result = await model.Registration(_userManager, _signInManager);
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                   ModelState.AddModelError(string.Empty, error.Description);
+                   return View(ModelState);
                 }
             }
-            return View(model);
+            return View(model);//Redirect("/");
         }
         public async Task SendEmailAsync(string email)
         {

@@ -28,13 +28,6 @@ namespace BeverageMachine.Services
             {
                 await _signInManager.SignInAsync(user, false);
             }
-            //else
-            //{
-            //    foreach (var error in result.Errors)
-            //    {
-            //        ModelState.AddModelError(string.Empty, error.Description);
-            //    }
-            //}
             return result;
         }
     }

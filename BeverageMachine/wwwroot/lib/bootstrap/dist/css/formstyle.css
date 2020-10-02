@@ -170,7 +170,7 @@ input:focus ~ .bar:after {
     }
 
 #custom-checkbox:checked + label:before {
-    background: #1762EE;
+    background: #49d965b0;
 }
 
 .group-auth {
@@ -316,10 +316,12 @@ input:focus ~ .bar:after {
             margin-right: 33%;
             margin-left: -3%;
             width: 107%;
+            height: auto;
             background: #7ce675;
             border-bottom: 4px solid #65d767;
             color: white;
             font-size: 14px;
+            outline: none;
         }
 
     .form-inner textarea {
@@ -336,8 +338,8 @@ input:focus ~ .bar:after {
 
 .text-color {
     color: #707981;
-    margin: 0;
-    padding: 0;
+/*    margin: 0;
+    padding: 0;*/
 }
 
 .text-test {
@@ -355,8 +357,10 @@ input:focus ~ .bar:after {
 
 .width-el {
     position: absolute;
-    right: 0;
-    margin-left: 39%;
+    left: 90%;
+/*    right: 3%;*/
+/*    margin-left: 75%;*/
+/*    display: -webkit-flex;*/
 }
 
 
@@ -368,7 +372,7 @@ input:focus ~ .bar:after {
 
 
 [promt] {
-    position: relative; 
+    position: relative;
 }
 
     [promt]::before,
