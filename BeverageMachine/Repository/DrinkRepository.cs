@@ -21,6 +21,7 @@ namespace BeverageMachine.Repository
         {
             DbContext.Drinks.Remove(element);
         }
+
         public DrinkViewModel Get(int id)
         {
             return DbContext.Drinks.Find(id);

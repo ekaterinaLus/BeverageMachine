@@ -36,16 +36,12 @@ namespace BeverageMachine
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                   migration => migration.MigrationsAssembly(Configuration.GetValue<string>("MigrationsAssembly"))));
 
-            //services.AddDbContext<BusinessUniversityContext>(options =>
-            //  options.UseNpgsql(Configuration.GetConnectionString("BusinessUniversity"),
-            //      migration => migration.MigrationsAssembly(Configuration.GetValue<string>("MigrationsAssembly"))));
-
             services.AddIdentity<UserViewModel, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 4;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
             })
                .AddEntityFrameworkStores<ApplicationContext>()
                .AddDefaultTokenProviders();
@@ -57,31 +53,25 @@ namespace BeverageMachine
             services.AddScoped<IShoppingBasketsRepository, ShoppingBasketsRepository>();
 
             services.AddSession();
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromSeconds(10);
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.IsEssential = true;
-            //});
 
             services.AddTransient<IEmailService, EmailService>();
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Events.OnRedirectToLogin = (context) =>
-                {
-                    context.Response.Clear();
-                    context.Response.StatusCode = 401;//StatusCodes.Status401Unauthorized;
-                    return Task.CompletedTask;
-                };
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.Events.OnRedirectToLogin = (context) =>
+            //    {
+            //        context.Response.Clear();
+            //        context.Response.StatusCode = 401;//StatusCodes.Status401Unauthorized;
+            //        return Task.CompletedTask;
+            //    };
 
-                options.Events.OnRedirectToAccessDenied = (context) =>
-                {
-                    context.Response.Clear();
-                    context.Response.StatusCode = 401;//StatusCodes.Status403Forbidden;
-                    return Task.CompletedTask;
-                };
-            });
+            //    options.Events.OnRedirectToAccessDenied = (context) =>
+            //    {
+            //        context.Response.Clear();
+            //        context.Response.StatusCode = 401;//StatusCodes.Status403Forbidden;
+            //        return Task.CompletedTask;
+            //    };
+            //});
 
             services.AddControllersWithViews();
         }

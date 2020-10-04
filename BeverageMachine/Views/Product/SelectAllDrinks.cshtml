@@ -1,0 +1,50 @@
+﻿@model List<BeverageMachine.Models.DrinkViewModel>
+@{
+    ViewBag.Title = "All drinks";
+}
+    <body class="body-image">
+        @*<form asp-action="selectalldrinks" asp-controller="Product">
+                <h3>В базе @Model.Count() элемента(ов)</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    @foreach (DrinkViewModel el in Model)
+                    {
+                        <tbody>
+                            <tr>
+                                <td scope="col">@el.Id</td>
+                                <td scope="col">@el.Name</td>
+                                <td scope="col">@el.Amount</td>
+                            </tr>
+                        </tbody>
+                    }
+                </table>
+        </form>*@
+
+
+        <h1 class="white" align="center">We are pleased to offer you the following drinks</h1>
+        @foreach (DrinkViewModel drink in Model)
+        {
+            <div id="accordion">
+                <div class="card bg-white">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link text-color" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <strong>@drink.Name</strong>
+                            </button>
+                        </h5>
+                    </div>
+                </div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body bg-white">
+                        <strong>Цена: @drink.Amount; Доступное количество: @drink.Quantity;</strong>
+                    </div>
+                </div>
+            </div>
+        }
+    </body>

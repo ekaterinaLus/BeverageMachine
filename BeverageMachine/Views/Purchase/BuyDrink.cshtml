@@ -1,42 +1,40 @@
 ﻿@model List<BeverageMachine.Models.DrinkViewModel>
-
-<form method="post" asp-controller="Purchase" asp-action="AddToCart">
-    <h3>Покупка напитков</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th></th>
-                <th scope="col">Наименование</th>
-                <th scope="col">Цена</th>
-                <th scope="col">Выберите количество</th>
-                <th></th>
-            </tr>
-        </thead>
-        @foreach (DrinkViewModel el in Model)
-        {
-            <tbody>
-                <tr>
-                    <td><input type="checkbox" indeterminate="true" value="@el.Id" name="drinkId" /></td>
-                    <td>
-                        <p>@el.Name</p>
-                    </td>
-                    <td>
-                        <p>@el.Amount.ToString("c")</p>
-                    </td>
-                    <td>
-                        <p>Кол-во</p>
-                    </td>
-                    <td>
-                        <input type="submit" value="Добавить в корзину" class="button" />
-                    </td>
-                </tr>
-            </tbody>
-        }
-        @*<td>
-            <input type="submit" value="Добавить в корзину" class="button" />
-        </td>*@
-    </table>
-</form>
+    <body class="body-image">
+        <form method="post" asp-controller="purchase" asp-action="addToCart">
+            <h3>Покупка напитков</h3>
+            <table class="table bg-white">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th scope="col">Наименование</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col">Выберите количество</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @foreach (DrinkViewModel el in Model)
+                {
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" indeterminate="true" value="@el.Id" name="drinkId" /></td>
+                            <td>
+                                <p>@el.Name</p>
+                            </td>
+                            <td>
+                                <p>@el.Amount.ToString("c")</p>
+                            </td>
+                            <td>
+                                <p>Кол-во</p>
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-light">Добавить в корзину</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </form>
+    </body>
 
     @*<script>
         $('#minus').click(function () {

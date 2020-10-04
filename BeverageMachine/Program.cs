@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BeverageMachine.Models;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +23,6 @@ namespace BeverageMachine
                 using (var scope = hostWeb.Services.CreateScope())
                 {
                     var services = scope.ServiceProvider;
-                    //var context = services.GetRequiredService<BusinessUniversityContext>();
-                    //context.Database.Migrate();
 
                     try
                     {

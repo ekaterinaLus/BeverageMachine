@@ -18,7 +18,7 @@ namespace BeverageMachine
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationContext>>()))
             {
                 //var adminId = await EnsureUserCreated(_context, serviceProvider, "1234", "ekaterinatimofeeva20@gmail.com");
-                var userId = await EnsureUserCreated(_context, serviceProvider, "1234", "lirik@gmail.com");
+                var userId = await EnsureUserCreated(_context, serviceProvider, "1234", "llirik@gmail.com");
                 //await EnsureRoleCreated(_context, serviceProvider, adminId, ApplicationContext.RoleName.Admin.ToString());
                 await EnsureRoleCreated(_context, serviceProvider, userId, ApplicationContext.RoleName.User.ToString());
             }
@@ -33,7 +33,7 @@ namespace BeverageMachine
                 user = new UserViewModel { UserName = name, Email = name };
                 await userManager.CreateAsync(user, password);
             }
-            //context.SaveChanges();
+            await context.SaveChangesAsync();
             return user.Id;
         }
 
@@ -51,7 +51,7 @@ namespace BeverageMachine
             {
                 idenRes = await userManager.AddToRoleAsync(user, role);
             }
-            //context.SaveChanges();
+            await context.SaveChangesAsync();
             return idenRes;
         }
 
@@ -60,38 +60,49 @@ namespace BeverageMachine
             context.Add(drink);
             await context.SaveChangesAsync();
         }
+
         public static decimal Summa(this List<PurchasedGoodViewModel> basket)
         {
             return basket.Sum(x => x.Drink.Amount * x.Quantity);
         }
-        public static void AddDrink(this ApplicationContext context, DrinkViewModel drink, int quantity)
+        public static void AddDrink(this ApplicationContext context, DrinkViewModel drink, int quantity, string userId)
         {
-            var goods = new List<PurchasedGoodViewModel>();
-            PurchasedGoodViewModel line = goods
-                .Where(x => x.Drink.Id == drink.Id)
-                .FirstOrDefault();
-            var p = context.ShoppingBaskets.ToList();
-            var l = p.Where(x => x.UserId == "c95t").FirstOrDefault();
-            if (line == null)
+            List<ShoppingBasketViewModel> basketList = context.ShoppingBaskets.ToList();
+            ShoppingBasketViewModel basket = basketList.Where(x => x.UserId == userId).FirstOrDefault();
+            var purchased = basket != null ? context.PurchasedGoods.ToList().
+                Where(x => x.ShoppingBasketViewModelId == basket.Id & x.DrinkId == drink.Id).FirstOrDefault() : null;
+
+            if (basket == null)
             {
-                line = new PurchasedGoodViewModel
+                basket = new ShoppingBasketViewModel()
                 {
-                    Quantity = quantity,
-                    Drink = drink,
-                    ShoppingBasketViewModel = l
+                    UserId = userId
                 };
-                l.Goods.Add(line);
             }
-            context.PurchasedGoods.AddRange(new List<PurchasedGoodViewModel>() { line});
+
+            if (purchased != null)
+            {
+                purchased.Quantity += quantity;
+            }
+
+            if (purchased == null)
+            {
+                purchased = new PurchasedGoodViewModel { DrinkId = drink.Id, Quantity = quantity, ShoppingBasketViewModel = basket, ShoppingBasketViewModelId = basket.Id };
+            }
+
+            basket.Goods.Add(purchased);
+            //context.PurchasedGoods.AddRange(new List<PurchasedGoodViewModel>() { purchased });
             context.SaveChanges();
         }
         public static void AddOrder(this ApplicationContext context, ShoppingBasketViewModel basket, decimal sum)
         {
-            OrderViewModel order = new OrderViewModel();
-            order.Basket = basket;
-            order.Amount = sum;
-            context.Orders.Add(order);
-            context.SaveChanges();
+            OrderViewModel order = context.Orders.Where(x => x.Basket.Id == basket.Id).FirstOrDefault();
+            if (order == null)
+            {
+                order = new OrderViewModel() { Basket = basket, Amount = sum};
+                context.Orders.Add(order);
+                context.SaveChanges();
+            }
         }
         public static GoodsViewModel GetGoods(this ApplicationContext context, string userId)//To Do: когда пользователь не внес данные в корзину, выходит ошибка
         {
@@ -107,6 +118,13 @@ namespace BeverageMachine
                 model.PurchasedGoods = purchaseds;
             }
             return model;
+        }
+
+        public static ShoppingBasketViewModel GetBasket(this ApplicationContext context,  string userName)
+        {
+            var id = context.Users.Where(x => x.UserName == userName).Select(x => x.Id).FirstOrDefault();
+            var basket = context.ShoppingBaskets.Where(x => x.UserId == id).FirstOrDefault();
+            return basket;
         }
         public static dynamic GetChange(this OrderViewModel order, decimal clientMoney)
         {

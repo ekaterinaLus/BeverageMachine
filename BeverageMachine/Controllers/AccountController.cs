@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BeverageMachine.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController: Controller
     {
         private readonly UserManager<UserViewModel> _userManager;
         private readonly SignInManager<UserViewModel> _signInManager;
@@ -19,6 +19,7 @@ namespace BeverageMachine.Controllers
         private readonly IEmailService _emailService;
         private readonly ApplicationContext _context;
         private readonly IServiceProvider _provider;
+
         public AccountController(UserManager<UserViewModel> userManager, SignInManager<UserViewModel> signInManager, //RoleManager<Role> roleManager,
             IEmailService emailService, ApplicationContext context, IServiceProvider provider)
         {
@@ -43,6 +44,7 @@ namespace BeverageMachine.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.Remember, false);
+
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -83,14 +85,12 @@ namespace BeverageMachine.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await model.Registration(_userManager, _signInManager);
-                foreach (var error in result.Errors)
-                {
-                   ModelState.AddModelError(string.Empty, error.Description);
-                   return View(ModelState);
-                }
+                await model.Registration(_context, _provider);
+                return Redirect("/");
             }
-            return View(model);//Redirect("/");
+            else {
+                return View(model); 
+            }
         }
         public async Task SendEmailAsync(string email)
         {
@@ -127,6 +127,7 @@ namespace BeverageMachine.Controllers
             if (ModelState.IsValid && user != null)
             {
                await  _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+
                return View("ResetPasswordMessage");
             }
             return View(model);

@@ -14,13 +14,5 @@ namespace BeverageMachine.ViewModel
         public DrinkViewModel Drink { get; set; }
         public int ShoppingBasketViewModelId { get; set; }
         public ShoppingBasketViewModel ShoppingBasketViewModel { get; set; }
-        //public PurchasedGoodViewModel()
-        //{ 
-        //}
-        //public PurchasedGoodViewModel(int quantity, DrinkViewModel drink, ShoppingBasketViewModel)
-        //{
-        //    Quantity = quantity;
-        //    Drink = drink;
-        //}
     }
 }

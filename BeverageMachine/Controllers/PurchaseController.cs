@@ -25,26 +25,21 @@ namespace BeverageMachine.Controllers
             orderRepository = new OrderRepository(_context);
             purchasedRepository = new PurchasedGoodRepository(_context);
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize(Roles = "User")]
         public IActionResult BuyDrink()
         {
             var drinks = drinkRepository.GetAll();
             return View(drinks);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> BuyDrink(string elem)
-        {
-            //await context.AddToCart(elem);
-            var drinks = drinkRepository.GetAll();
-            return View(drinks);
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> BuyDrink(string elem)
+        //{
+        //    var drinks = drinkRepository.GetAll();
+        //    return View(drinks);
+        //}
 
         [HttpGet]
         [Authorize]
@@ -57,31 +52,14 @@ namespace BeverageMachine.Controllers
             }
             return View();
         }
-        [HttpGet]
-        public async Task<IActionResult> AddToCart()
-        {
-            var drinks = drinkRepository.GetAll();
-            return View(drinks);
-        }
-        [HttpPost]
-        public string Index(string[] countries)
-        {
-            string result = "";
-            foreach (string c in countries)
-            {
-                result += c;
-                result += ";";
-            }
-            return "Вы выбрали: " + result;
-        }
 
         [HttpPost]
-        public async Task AddToCart(int drinkId)
+        public async Task<IActionResult> AddToCart(int drinkId)
         {
+            string userId = _context.CheckАuthentication(User.Identity);
             var drink = drinkRepository.Get(drinkId);
-            _context.AddDrink(drink, 1);
-            //context.Add(el);
-            //await context.SaveChangesAsync();
+            _context.AddDrink(drink, 1, userId);
+            return Redirect("/Purchase/BuyDrink");
         }
 
         [HttpPost]
@@ -98,24 +76,18 @@ namespace BeverageMachine.Controllers
             return View(_context.GetGoods(userId));
         }
 
-        //[HttpPost]
-        //public IActionResult SelectAllProducts()
-        //{
-        //    string userId = Аuthentication.CheckАuthentication(User.Identity);
-        //    return View(context.GetGoods(userId));
-        //}
-
         [HttpGet]
-        public IActionResult Check(int id)
+        public IActionResult Check()
         {
-            var baskets = shoppingRepository.Get(id);
-            decimal sum = baskets.Goods.Summa();
+
+            ShoppingBasketViewModel basket = _context.GetBasket(User.Identity.Name);
+            decimal sum = basket.Goods.Summa();
+            _context.AddOrder(basket, sum);
             OrderViewModel order = _context.Orders
-                .Where(x => x.Basket.Id == baskets.Id).FirstOrDefault();
+                .Where(x => x.Basket.Id == basket.Id).FirstOrDefault();
             ViewBag.Sum = sum;
-            ViewBag.Basket = baskets;
+            ViewBag.Basket = basket;
             ViewBag.Order = order.Id;
-            _context.AddOrder(baskets, sum);
             return View();
         }
         [HttpPost]
