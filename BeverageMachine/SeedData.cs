@@ -17,10 +17,11 @@ namespace BeverageMachine
             using (var _context = new ApplicationContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationContext>>()))
             {
-                //var adminId = await EnsureUserCreated(_context, serviceProvider, "1234", "ekaterinatimofeeva20@gmail.com");
+                var adminId = await EnsureUserCreated(_context, serviceProvider, "1234", "ekaterinatimofeeva20@gmail.com");
                 var userId = await EnsureUserCreated(_context, serviceProvider, "1234", "llirik@gmail.com");
-                //await EnsureRoleCreated(_context, serviceProvider, adminId, ApplicationContext.RoleName.Admin.ToString());
+                await EnsureRoleCreated(_context, serviceProvider, adminId, ApplicationContext.RoleName.Admin.ToString());
                 await EnsureRoleCreated(_context, serviceProvider, userId, ApplicationContext.RoleName.User.ToString());
+                await AddDrinks(_context);
             }
         }
 
@@ -53,6 +54,22 @@ namespace BeverageMachine
             }
             await context.SaveChangesAsync();
             return idenRes;
+        }
+
+        private static async Task AddDrinks(ApplicationContext context)
+        {
+            List<DrinkViewModel> items = new List<DrinkViewModel>
+            {
+                new DrinkViewModel { Name = "Mojito peach", Amount = 12, Quantity = 10},
+                new DrinkViewModel { Name = "Mojito strawberry", Amount = 12, Quantity = 10},
+                new DrinkViewModel { Name = "Watermelon tea", Amount = 24, Quantity = 10},
+                new DrinkViewModel { Name = "Lemonade with ginger", Amount = 13, Quantity = 6},
+                new DrinkViewModel { Name = "Lemonade surprise", Amount = 11, Quantity = 8},
+                new DrinkViewModel { Name = "Harry Potter lemonade", Amount = 25, Quantity = 3}
+            };
+
+            await context.Drinks. AddUniqueElementsAsync(items);
+            context.SaveChanges();
         }
 
         public static async Task CreateDrink(this DrinkViewModel drink, ApplicationContext context)
