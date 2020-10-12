@@ -1,9 +1,7 @@
-﻿using BeverageMachine.Models;
-using BeverageMachine.ViewModel;
-using System;
+﻿using BeverageMachine.Entity;
+using BeverageMachine.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BeverageMachine.Repository
 {
@@ -14,22 +12,22 @@ namespace BeverageMachine.Repository
         {
             DbContext = context;
         }
-        public void Create(PurchasedGoodViewModel element)
+        public void Create(PurchasedGood element)
         {
             DbContext.PurchasedGoods.Add(element);
         }
 
-        public void Delete(PurchasedGoodViewModel element)
+        public void Delete(PurchasedGood element)
         {
             DbContext.PurchasedGoods.Remove(element);
         }
 
-        public PurchasedGoodViewModel Get(int id)
+        public PurchasedGood Get(int id)
         {
             return DbContext.PurchasedGoods.Find(id);
         }
 
-        public List<PurchasedGoodViewModel> GetAll()
+        public List<PurchasedGood> GetAll()
         {
             return DbContext.PurchasedGoods.ToList();
         }

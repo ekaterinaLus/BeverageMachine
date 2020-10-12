@@ -1,10 +1,7 @@
-﻿ using BeverageMachine.Migrations;
+﻿using BeverageMachine.Entity;
 using BeverageMachine.Models;
-using BeverageMachine.ViewModel;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BeverageMachine.Repository
 {
@@ -15,24 +12,24 @@ namespace BeverageMachine.Repository
         {
             DbContext = context;
         }
-        public void Create(ShoppingBasketViewModel element)
+        public void Create(ShoppingBasket element)
         {
             DbContext.ShoppingBaskets.Add(element);
         }
 
-        public void Delete(ShoppingBasketViewModel element)
+        public void Delete(ShoppingBasket element)
   
         {
             DbContext.ShoppingBaskets.Remove(element);
         }
 
-        public ShoppingBasketViewModel Get(int id)
+        public ShoppingBasket Get(int id)
         {
             var t = DbContext.ShoppingBaskets.Find(id);
             return t;
         }
 
-        public List<ShoppingBasketViewModel> GetAll()
+        public List<ShoppingBasket> GetAll()
         {
             return DbContext.ShoppingBaskets.ToList();
         }

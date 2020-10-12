@@ -1,40 +1,41 @@
-﻿using BeverageMachine.Models;
-using BeverageMachine.ViewModel;
+﻿using BeverageMachine.Entity;
+using BeverageMachine.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BeverageMachine
 {
+    //creating users and roles when starting the program, adding entities to the database
     public static class SeedData
     {
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
-            using (var _context = new ApplicationContext(
+            using (var context = new ApplicationContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationContext>>()))
             {
-                var adminId = await EnsureUserCreated(_context, serviceProvider, "1234", "ekaterinatimofeeva20@gmail.com");
-                var userId = await EnsureUserCreated(_context, serviceProvider, "1234", "llirik@gmail.com");
-                await EnsureRoleCreated(_context, serviceProvider, adminId, ApplicationContext.RoleName.Admin.ToString());
-                await EnsureRoleCreated(_context, serviceProvider, userId, ApplicationContext.RoleName.User.ToString());
-                await AddDrinks(_context);
+                var adminId = await EnsureUserCreated(context, serviceProvider, "1234", "ekaterinatimofeeva20@gmail.com");
+                var userId = await EnsureUserCreated(context, serviceProvider, "1234", "llirik@gmail.com");
+                await EnsureRoleCreated(context, serviceProvider, adminId, nameof(ApplicationContext.RoleName.Admin));
+                await EnsureRoleCreated(context, serviceProvider, userId, nameof(ApplicationContext.RoleName.User));
+                await AddDrinks(context);
             }
         }
 
         public static async Task<string> EnsureUserCreated(ApplicationContext context, IServiceProvider provider, string password, string name)
         {
-            var userManager = provider.GetService<UserManager<UserViewModel>>();
-            UserViewModel user = await userManager.FindByNameAsync(name);
+            var userManager = provider.GetService<UserManager<User>>();
+            User user = await userManager.FindByNameAsync(name);
             if (user == null)
             {
-                user = new UserViewModel { UserName = name, Email = name };
+                user = new User { UserName = name, Email = name };
                 await userManager.CreateAsync(user, password);
+                await context.SaveChangesAsync();
             }
-            await context.SaveChangesAsync();
+
             return user.Id;
         }
 
@@ -42,7 +43,7 @@ namespace BeverageMachine
         {
             IdentityResult idenRes = null;
             var roleManager = provider.GetService<RoleManager<IdentityRole>>();
-            var userManager = provider.GetService<UserManager<UserViewModel>>();
+            var userManager = provider.GetService<UserManager<User>>();
             var user = await userManager.FindByIdAsync(userID);
             if (!await roleManager.RoleExistsAsync(role))
             {
@@ -58,104 +59,19 @@ namespace BeverageMachine
 
         private static async Task AddDrinks(ApplicationContext context)
         {
-            List<DrinkViewModel> items = new List<DrinkViewModel>
+            List<Drink> items = new List<Drink>
             {
-                new DrinkViewModel { Name = "Mojito peach", Amount = 12, Quantity = 10},
-                new DrinkViewModel { Name = "Mojito strawberry", Amount = 12, Quantity = 10},
-                new DrinkViewModel { Name = "Watermelon tea", Amount = 24, Quantity = 10},
-                new DrinkViewModel { Name = "Lemonade with ginger", Amount = 13, Quantity = 6},
-                new DrinkViewModel { Name = "Lemonade surprise", Amount = 11, Quantity = 8},
-                new DrinkViewModel { Name = "Harry Potter lemonade", Amount = 25, Quantity = 3}
+                new Drink { Name = "Mojito peach", Amount = 12, Quantity = 10},
+                new Drink { Name = "Mojito strawberry", Amount = 12, Quantity = 10},
+                new Drink { Name = "Watermelon tea", Amount = 24, Quantity = 10},
+                new Drink { Name = "Lemonade with ginger", Amount = 13, Quantity = 6},
+                new Drink { Name = "Lemonade surprise", Amount = 11, Quantity = 8},
+                new Drink { Name = "Harry Potter lemonade", Amount = 25, Quantity = 3}
             };
 
             await context.Drinks. AddUniqueElementsAsync(items);
-            context.SaveChanges();
-        }
-
-        public static async Task CreateDrink(this DrinkViewModel drink, ApplicationContext context)
-        {
-            context.Add(drink);
             await context.SaveChangesAsync();
-        }
-
-        public static decimal Summa(this List<PurchasedGoodViewModel> basket)
-        {
-            return basket.Sum(x => x.Drink.Amount * x.Quantity);
-        }
-        public static void AddDrink(this ApplicationContext context, DrinkViewModel drink, int quantity, string userId)
-        {
-            List<ShoppingBasketViewModel> basketList = context.ShoppingBaskets.ToList();
-            ShoppingBasketViewModel basket = basketList.Where(x => x.UserId == userId).FirstOrDefault();
-            var purchased = basket != null ? context.PurchasedGoods.ToList().
-                Where(x => x.ShoppingBasketViewModelId == basket.Id & x.DrinkId == drink.Id).FirstOrDefault() : null;
-
-            if (basket == null)
-            {
-                basket = new ShoppingBasketViewModel()
-                {
-                    UserId = userId
-                };
-            }
-
-            if (purchased != null)
-            {
-                purchased.Quantity += quantity;
-            }
-
-            if (purchased == null)
-            {
-                purchased = new PurchasedGoodViewModel { DrinkId = drink.Id, Quantity = quantity, ShoppingBasketViewModel = basket, ShoppingBasketViewModelId = basket.Id };
-            }
-
-            basket.Goods.Add(purchased);
-            //context.PurchasedGoods.AddRange(new List<PurchasedGoodViewModel>() { purchased });
-            context.SaveChanges();
-        }
-        public static void AddOrder(this ApplicationContext context, ShoppingBasketViewModel basket, decimal sum)
-        {
-            OrderViewModel order = context.Orders.Where(x => x.Basket.Id == basket.Id).FirstOrDefault();
-            if (order == null)
-            {
-                order = new OrderViewModel() { Basket = basket, Amount = sum};
-                context.Orders.Add(order);
-                context.SaveChanges();
-            }
-        }
-        public static GoodsViewModel GetGoods(this ApplicationContext context, string userId)//To Do: когда пользователь не внес данные в корзину, выходит ошибка
-        {
-            GoodsViewModel model = new GoodsViewModel();
-            model.Basket = context.ShoppingBaskets.Where(x => x.UserId == userId).FirstOrDefault();
-            if (model.Basket != null)
-            {
-                var purchaseds = context.PurchasedGoods.Where(x => x.ShoppingBasketViewModelId == model.Basket.Id).ToList();
-                foreach (var element in purchaseds)
-                {
-                    element.Drink = context.Drinks.Where(x => x.Id == element.DrinkId).FirstOrDefault();
-                }
-                model.PurchasedGoods = purchaseds;
-            }
-            return model;
-        }
-
-        public static ShoppingBasketViewModel GetBasket(this ApplicationContext context,  string userName)
-        {
-            var id = context.Users.Where(x => x.UserName == userName).Select(x => x.Id).FirstOrDefault();
-            var basket = context.ShoppingBaskets.Where(x => x.UserId == id).FirstOrDefault();
-            return basket;
-        }
-        public static dynamic GetChange(this OrderViewModel order, decimal clientMoney)
-        {
-            if (order.Amount < clientMoney || order.Amount == clientMoney)
-            {
-                decimal change = clientMoney - order.Amount;
-                return change;
-            }
-            else 
-            {
-                string error = "Внесенная сумма меньше требуемой";
-                return error;
-            }
-        }
+        }  
     }
 }
 

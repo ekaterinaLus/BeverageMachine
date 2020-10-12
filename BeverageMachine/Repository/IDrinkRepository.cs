@@ -1,12 +1,8 @@
-﻿using BeverageMachine.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BeverageMachine.Entity;
 
 namespace BeverageMachine.Repository
 {
-    interface IDrinkRepository: IGenericRepository<DrinkViewModel>
+    interface IDrinkRepository: IGenericRepository<Drink>
     {
     }
 }

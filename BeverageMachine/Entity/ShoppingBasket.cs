@@ -1,23 +1,19 @@
-﻿using BeverageMachine.Models;
-using BeverageMachine.Repository;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace BeverageMachine.ViewModel
+namespace BeverageMachine.Entity
 {
-    public class ShoppingBasketViewModel
+    public class ShoppingBasket
     {
         public int Id { get; set; }
         public string UserId { get; set; }
-        public List<PurchasedGoodViewModel> Goods { get; set; }
+        public List<PurchasedGood> Goods { get; set; }
 
-        public ShoppingBasketViewModel()
+        public ShoppingBasket()
         {
-            Goods = new List<PurchasedGoodViewModel>();
+            Goods = new List<PurchasedGood>();
         }
-        public ShoppingBasketViewModel(List<PurchasedGoodViewModel> _goods)
+        public ShoppingBasket(List<PurchasedGood> _goods)
         {
             Goods = _goods;
         }
@@ -40,16 +36,16 @@ namespace BeverageMachine.ViewModel
         //    basket.Goods.Add(line);
         //    return basket;
         //}
-        public ShoppingBasketViewModel AddItem(DrinkViewModel drink, int quantity)
+        public ShoppingBasket AddItem(Drink drink, int quantity)
         {
-            var el = new ShoppingBasketViewModel();
-            var goods = new List<PurchasedGoodViewModel>();
-            PurchasedGoodViewModel line = goods
+            var el = new ShoppingBasket();
+            var goods = new List<PurchasedGood>();
+            PurchasedGood line = goods
                 .Where(x => x.Drink.Id == drink.Id)
                 .FirstOrDefault();
             if (line == null)
             {
-                line = new PurchasedGoodViewModel
+                line = new PurchasedGood
                 {
                     Quantity = quantity,
                     Drink = drink
@@ -62,9 +58,8 @@ namespace BeverageMachine.ViewModel
             return el;
         }
 
-        public void Remove(DrinkViewModel drink)
+        public void Remove(Drink drink)
         {
-            //HttpSessionState
             Goods.RemoveAll(x => x.Drink.Id == drink.Id);
         }
     }

@@ -1,12 +1,8 @@
-﻿using BeverageMachine.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BeverageMachine.Entity;
 
 namespace BeverageMachine.Repository
 {
-    interface IShoppingBasketsRepository: IGenericRepository<ShoppingBasketViewModel>
+    interface IShoppingBasketsRepository: IGenericRepository<ShoppingBasket>
     {
     }
 }

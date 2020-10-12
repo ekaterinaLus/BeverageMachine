@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace BeverageMachine.Models
 {
-    public class WalletViewModel
+    public class Wallet
     {
         public int IdGood { get; set; }
         public decimal Cost { get; set; }
         public decimal Pay { get; set; }
 
-        public WalletViewModel()
+        public Wallet()
         {            
         }
-        public WalletViewModel(decimal _cost, decimal _pay)
+        public Wallet(decimal _cost, decimal _pay)
         {
             Cost = _cost;
             Pay = _pay;

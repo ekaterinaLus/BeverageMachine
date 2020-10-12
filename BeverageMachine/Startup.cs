@@ -36,7 +36,7 @@ namespace BeverageMachine
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                   migration => migration.MigrationsAssembly(Configuration.GetValue<string>("MigrationsAssembly"))));
 
-            services.AddIdentity<UserViewModel, IdentityRole>(options =>
+            services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 4;
                 options.Password.RequireLowercase = false;
@@ -46,7 +46,7 @@ namespace BeverageMachine
                .AddEntityFrameworkStores<ApplicationContext>()
                .AddDefaultTokenProviders();
 
-            services.AddScoped<ApplicationContext>();
+            //services.AddScoped<ApplicationContext>();
            
             services.AddScoped<IDrinkRepository, DrinkRepository>();
 

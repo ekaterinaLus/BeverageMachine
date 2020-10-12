@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BeverageMachine.Entity;
 using BeverageMachine.Models;
 using BeverageMachine.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BeverageMachine.Controllers
 {
+    //calling the appropriate methods for adding a drink to the database (by the administrator), selecting drinks from the database
     public class ProductController : Controller
     {
         private readonly IDrinkRepository _drinkRepository;
@@ -31,8 +30,8 @@ namespace BeverageMachine.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Create(DrinkViewModel drink)
+        //[Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> Create(Drink drink)
         {
             _drinkRepository.Create(drink);
             await _context.SaveChangesAsync();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeverageMachine.Models
 {
-    public class UserViewModel : IdentityUser
+    public class User : IdentityUser
     {
         public override string Email { get; set; }
     }

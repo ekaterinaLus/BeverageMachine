@@ -1,26 +1,25 @@
-﻿using BeverageMachine.Models;
+﻿using BeverageMachine.Entity;
+using BeverageMachine.Models;
 using BeverageMachine.Services;
-using BeverageMachine.ViewModel;
 using Helper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace BeverageMachine.Controllers
 {
+    //calling the appropriate methods for registration, user login/logout, password reset, email messages to create a new password.
     public class AccountController: Controller
     {
-        private readonly UserManager<UserViewModel> _userManager;
-        private readonly SignInManager<UserViewModel> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailService;
         private readonly ApplicationContext _context;
         private readonly IServiceProvider _provider;
 
-        public AccountController(UserManager<UserViewModel> userManager, SignInManager<UserViewModel> signInManager, //RoleManager<Role> roleManager,
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, //RoleManager<Role> roleManager,
             IEmailService emailService, ApplicationContext context, IServiceProvider provider)
         {
             _userManager = userManager;
@@ -34,12 +33,12 @@ namespace BeverageMachine.Controllers
         [HttpGet]
         public IActionResult Login(string stringUrl = null)
         {
-            return View(new LoginViewModel { ReturnUrl = stringUrl });
+            return View(new Login { ReturnUrl = stringUrl });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Login(LoginViewModel model)
+        public async Task <IActionResult> Login(Login model)
         {
             if (ModelState.IsValid)
             {
@@ -53,7 +52,7 @@ namespace BeverageMachine.Controllers
                     }
                     else
                     {
-                        return Redirect("/");//Redirect("/");
+                        return Redirect("/");
                     }
                 }
             }
@@ -81,7 +80,7 @@ namespace BeverageMachine.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(Register model)
         {
             if (ModelState.IsValid)
             {
@@ -104,7 +103,7 @@ namespace BeverageMachine.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel model)
+        public async Task<IActionResult> ForgetPassword(ForgetPassword model)
         {
             if (ModelState.IsValid)
             {
@@ -121,7 +120,7 @@ namespace BeverageMachine.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword(ResetPassword model)
         {
             var user = await _userManager.FindByNameAsync(model.Email);
             if (ModelState.IsValid && user != null)

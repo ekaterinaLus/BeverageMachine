@@ -1,10 +1,10 @@
-﻿@model List<BeverageMachine.ViewModel.PurchasedGoodViewModel>
+﻿@model List<BeverageMachine.Entity.PurchasedGood>
 @{
     ViewBag.Title = "Оплата";
 }
 
 <form asp-action="amount" asp-controller="purchase">
-    <p>Сумма к оплате: @Model.Summa() рублей</p>
+    <p>Сумма к оплате: Model.GetTotal() рублей</p>
 </form>
 <form asp-action="amount" asp-controller="purchase">
 <input type="number">

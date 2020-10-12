@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace BeverageMachine.ViewModel
+namespace BeverageMachine.Entity
 {
-    public class LoginViewModel
+    public class Login
     {
         [Required]
         [DataType(DataType.EmailAddress)]

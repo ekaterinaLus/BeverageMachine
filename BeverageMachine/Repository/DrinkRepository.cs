@@ -1,8 +1,7 @@
-﻿using BeverageMachine.Models;
-using System;
+﻿using BeverageMachine.Entity;
+using BeverageMachine.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BeverageMachine.Repository
 {
@@ -13,20 +12,20 @@ namespace BeverageMachine.Repository
         {
             DbContext = context;
         }
-        public void Create(DrinkViewModel element)
+        public void Create(Drink element)
         {
             DbContext.Drinks.Add(element);
         }
-        public void Delete(DrinkViewModel element)
+        public void Delete(Drink element)
         {
             DbContext.Drinks.Remove(element);
         }
 
-        public DrinkViewModel Get(int id)
+        public Drink Get(int id)
         {
             return DbContext.Drinks.Find(id);
         }
-        public List<DrinkViewModel> GetAll()
+        public List<Drink> GetAll()
         {
             return DbContext.Drinks.ToList();
         }

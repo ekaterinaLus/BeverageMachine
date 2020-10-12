@@ -1,51 +1,45 @@
 ﻿using BeverageMachine.Models;
 using BeverageMachine.Repository;
-using BeverageMachine.ViewModel;
+using BeverageMachine.Services;
+using BeverageMachine.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using System.Linq;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace BeverageMachine.Controllers
 {
+    //calling the appropriate methods for calculating the amount of goods, the ability to add an item to the cart, view all items in the cart
     public class PurchaseController : Controller
     {
-        private static ApplicationContext _context = new ApplicationContext();
-        private IDrinkRepository drinkRepository;
-        private IOrderRepository orderRepository;
-        private IShoppingBasketsRepository shoppingRepository;
-        private IPurchasedGoodRepository purchasedRepository;
+        private static ApplicationContext _context ;
+        private IDrinkRepository _drinkRepository;
+        private IOrderRepository _orderRepository;
+        private IShoppingBasketsRepository _shoppingRepository;
+        private IPurchasedGoodRepository _purchasedRepository;
 
-        public PurchaseController()//(ApplicationContext context)
+        public PurchaseController(ApplicationContext context)
         {
-            //ApplicationContext  _context = new ApplicationContext();
-            shoppingRepository = new ShoppingBasketsRepository(_context);
-            drinkRepository = new DrinkRepository(_context);
-            orderRepository = new OrderRepository(_context);
-            purchasedRepository = new PurchasedGoodRepository(_context);
+            _context = context;
+            _shoppingRepository = new ShoppingBasketsRepository(_context);
+            _drinkRepository = new DrinkRepository(_context);
+            _orderRepository = new OrderRepository(_context);
+            _purchasedRepository = new PurchasedGoodRepository(_context);
         }
 
         [HttpGet]
         [Authorize(Roles = "User")]
         public IActionResult BuyDrink()
         {
-            var drinks = drinkRepository.GetAll();
+            var drinks = _drinkRepository.GetAll();
             return View(drinks);
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> BuyDrink(string elem)
-        //{
-        //    var drinks = drinkRepository.GetAll();
-        //    return View(drinks);
-        //}
 
         [HttpGet]
         [Authorize]
         public IActionResult SelectShopping()
         {
-            var drinks = drinkRepository.GetAll();
+            var drinks = _drinkRepository.GetAll();
             if (drinks != null)
             {
                 return View(drinks);
@@ -54,19 +48,19 @@ namespace BeverageMachine.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToCart(int drinkId)
+        public async Task<IActionResult> AddToCart(int drinkId, int quantity)
         {
             string userId = _context.CheckАuthentication(User.Identity);
-            var drink = drinkRepository.Get(drinkId);
-            _context.AddDrink(drink, 1, userId);
+            var drink = _drinkRepository.Get(drinkId);
+            _context.AddDrink(drink, quantity, userId);
             return Redirect("/Purchase/BuyDrink");
         }
 
         [HttpPost]
         public decimal Amount(int id)
         {
-            var baskets = shoppingRepository.Get(id);
-            return baskets.Goods.Summa();
+            var baskets = _shoppingRepository.Get(id);
+            return baskets.Goods.GetTotal();
         }
 
         [HttpGet]
@@ -80,10 +74,10 @@ namespace BeverageMachine.Controllers
         public IActionResult Check()
         {
 
-            ShoppingBasketViewModel basket = _context.GetBasket(User.Identity.Name);
-            decimal sum = basket.Goods.Summa();
+            ShoppingBasket basket = _context.GetBasket(User.Identity.Name);
+            decimal sum = basket.Goods.GetTotal();
             _context.AddOrder(basket, sum);
-            OrderViewModel order = _context.Orders
+            Order order = _context.Orders
                 .Where(x => x.Basket.Id == basket.Id).FirstOrDefault();
             ViewBag.Sum = sum;
             ViewBag.Basket = basket;
@@ -93,7 +87,7 @@ namespace BeverageMachine.Controllers
         [HttpPost]
         public IActionResult Check(decimal money, int id)
         {
-            OrderViewModel order = orderRepository.Get(id);
+            Order order = _orderRepository.Get(id);
             ViewBag.Change = order.GetChange(money);
             string userId = _context.CheckАuthentication(User.Identity);
             return View();

@@ -1,4 +1,4 @@
-﻿using BeverageMachine.Models;
+﻿using BeverageMachine.Entity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace BeverageMachine
     {
         private static readonly Dictionary<Type, dynamic> _comparersList = new Dictionary<Type, dynamic>
         {
-            { typeof(DrinkViewModel), new GenericCompare<DrinkViewModel> { GetComparableField = x => x.Name.ToLower() } }
+            { typeof(Drink), new GenericCompare<Drink> { GetComparableField = x => x.Name.ToLower() } }
         };
         public static async Task AddUniqueElementsAsync<T>(this DbSet<T> @this, IEnumerable<T> addingElements)
         where T : class

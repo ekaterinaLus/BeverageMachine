@@ -1,4 +1,4 @@
-﻿@model List<BeverageMachine.Models.DrinkViewModel>
+﻿@model List<BeverageMachine.Entity.Drink>
     <body class="body-image">
         <form method="post" asp-controller="purchase" asp-action="addToCart">
             <h3>Покупка напитков</h3>
@@ -12,7 +12,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                @foreach (DrinkViewModel el in Model)
+                @foreach (BeverageMachine.Entity.Drink el in Model)
                 {
                     <tbody>
                         <tr>
@@ -24,7 +24,8 @@
                                 <p>@el.Amount.ToString("c")</p>
                             </td>
                             <td>
-                                <p>Кол-во</p>
+                                <label for="quantity">Кол-во:</label>
+                                <input type="number" name="quantity" id="quantity" size= 6em/>
                             </td>
                             <td>
                                 <button type="submit" class="btn btn-light">Добавить в корзину</button>

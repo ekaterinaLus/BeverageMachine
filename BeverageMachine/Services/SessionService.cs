@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using BeverageMachine.ViewModel;
+﻿using BeverageMachine.Entity;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace BeverageMachine.Services
 {
@@ -27,13 +23,13 @@ namespace BeverageMachine.Services
             return value == null && value is T ? default : JsonSerializer.Deserialize<T>(value);
         }
 
-        public static ShoppingBasketViewModel GetBasket(this ISession session)
+        public static ShoppingBasket GetBasket(this ISession session)
         {
-            ShoppingBasketViewModel basket = Get<ShoppingBasketViewModel>(session, SessionKey.BASKET);
+            ShoppingBasket basket = Get<ShoppingBasket>(session, SessionKey.BASKET);
             if (basket == null)
             {
-                basket = new ShoppingBasketViewModel();
-                Set<ShoppingBasketViewModel>(session, SessionKey.BASKET, basket);
+                basket = new ShoppingBasket();
+                Set<ShoppingBasket>(session, SessionKey.BASKET, basket);
             }
             return basket;
         }

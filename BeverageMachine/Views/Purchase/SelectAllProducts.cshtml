@@ -1,5 +1,4 @@
-﻿@model BeverageMachine.ViewModel.GoodsViewModel;
-@{
+﻿@model BeverageMachine.Entity.Goods;
     ViewBag.Title = "Ваша корзина";
 }
     <form asp-action="selectallproducts" asp-controller="purchase" method="get">
@@ -14,7 +13,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (BeverageMachine.ViewModel.PurchasedGoodViewModel purchase in Model.PurchasedGoods)
+            @foreach (BeverageMachine.Entity.PurchasedGood purchase in Model.PurchasedGoods)
             {
                 <tr>
                     <td scope="col" name="Id">@purchase.Id</td>

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BeverageMachine.ViewModel
+namespace BeverageMachine.Entity
 {
-    public class ResetPasswordViewModel
+    public class ResetPassword
     {
         [Required]
         [DataType(DataType.EmailAddress)]

@@ -14,7 +14,7 @@ namespace BeverageMachine
 {
     public class Program
     {
-        public static bool NeedUpdateDb { get => true; }
+        public static bool NeedUpdateDb => true;
         public static async Task Main(string[] args)
         {
             var hostWeb = CreateWebHostBuilder(args).Build();
@@ -32,19 +32,13 @@ namespace BeverageMachine
                     {
                         var logger = services.GetRequiredService<ILogger<Program>>();
                         logger.LogError(ex, "Error");
-                        throw ex;
+                        throw;
                     }
                 }
             }
             hostWeb.Run();
         }
 
-        //public static IHostBuilder CreateHostBuilder(string[] args) =>
-        //    Host.CreateDefaultBuilder(args)
-        //        .ConfigureWebHostDefaults(webBuilder =>
-        //        {
-        //            webBuilder.UseStartup<Startup>();
-        //        });
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
            WebHost.CreateDefaultBuilder(args)
                .UseStartup<Startup>();

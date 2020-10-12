@@ -1,4 +1,4 @@
-﻿using BeverageMachine.ViewModel;
+﻿using BeverageMachine.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,17 +6,17 @@ using System.Data.Entity.Core.Objects;
 
 namespace BeverageMachine.Models
 {
-    public class ApplicationContext : IdentityDbContext<UserViewModel, IdentityRole, string>
+    public class ApplicationContext : IdentityDbContext<User, IdentityRole, string>
     {
         public enum RoleName
         { 
             Admin,
             User
         }
-        public Microsoft.EntityFrameworkCore.DbSet<DrinkViewModel> Drinks { get; set; }
-        public Microsoft.EntityFrameworkCore.DbSet<ShoppingBasketViewModel> ShoppingBaskets { get; set; }
-        public Microsoft.EntityFrameworkCore.DbSet<PurchasedGoodViewModel> PurchasedGoods { get; set; }
-        public Microsoft.EntityFrameworkCore.DbSet<OrderViewModel> Orders { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Drink> Drinks { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<ShoppingBasket> ShoppingBaskets { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<PurchasedGood> PurchasedGoods { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Order> Orders { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
                 : base(options)
         {

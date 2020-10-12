@@ -14,7 +14,7 @@ namespace BeverageMachine
             string userId = null;
             if (user.IsAuthenticated)
             {
-                List<UserViewModel> users = context.Users.ToList();
+                List<User> users = context.Users.ToList();
                 userId = users.Where(x => x.UserName == user.Name).Select(y => y.Id).FirstOrDefault();
             }
             return userId;

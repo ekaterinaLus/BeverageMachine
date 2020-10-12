@@ -147,6 +147,15 @@ input:focus ~ .bar:after {
     opacity: 0;
 }*/
 
+.error-text {
+    font-style: italic;
+    color: red;
+}
+
+.title {
+    background-color: brown;
+}
+
 .color-transparent {
     background-color: transparent;
 }
